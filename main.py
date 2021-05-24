@@ -59,6 +59,14 @@ class AndroidCamera(Camera):
 
     def frame_to_screen(self, frame):
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        
+        classifier = cv2.CascadeClassifier("haarcascade_frontalface_alt.xml")
+        faces = classifier.detectMultiScale(frame_rgb, 1.1, 6)
+        
+        # for loop to detect face using cascade
+        for (x,y,w,h) in faces:
+            cv2.rectangle(frame_rgb, (x,y), (x+w,y+h), (127,0,255), 2)
+        
         flipped = np.flip(frame_rgb, 0)
         buf = flipped.tostring()
         self.texture.blit_buffer(buf, colorfmt='rgb', bufferfmt='ubyte')
